@@ -29,20 +29,13 @@ const Header = () => {
         </div>
 
         <div className="flex justify-between items-center h-20">
-          {/* Logo and Title */}
-          <div className="flex items-center space-x-4">
+          {/* Logo Only */}
+          <div className="flex items-center">
             <img 
               src="/lovable-uploads/ef468316-24e7-4192-832f-0d60bd4c22e8.png" 
               alt="IJMMS Logo" 
-              className="h-12 w-auto"
+              className="h-16 w-auto"
             />
-            <div className="hidden lg:block">
-              <h1 className="text-xl font-bold text-primary leading-tight">
-                Integrated Journal of Medicine<br />
-                <span className="text-secondary">and Medical Sciences</span>
-              </h1>
-              <p className="text-xs text-muted-foreground mt-1">LAUTECH Teaching Hospital, Ogbomoso</p>
-            </div>
           </div>
 
           {/* Desktop Navigation */}
