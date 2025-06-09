@@ -1,0 +1,273 @@
+
+import React, { useState } from 'react';
+import { Upload, FileText, User, Mail } from 'lucide-react';
+
+const Submit = () => {
+  const [formData, setFormData] = useState({
+    title: '',
+    abstract: '',
+    keywords: '',
+    authors: '',
+    email: '',
+    affiliation: '',
+    manuscript: null
+  });
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0] || null;
+    setFormData(prev => ({ ...prev, manuscript: file }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Form submitted:', formData);
+    // Here you would integrate with Supabase for actual submission
+    alert('Manuscript submitted successfully! You will receive a confirmation email shortly.');
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-foreground mb-4">Submit Your Research</h1>
+          <p className="text-xl text-muted-foreground">
+            Share your groundbreaking research with the global scientific community
+          </p>
+        </div>
+
+        {/* Submission Guidelines */}
+        <div className="bg-card rounded-lg border border-border p-6 mb-8">
+          <h2 className="text-2xl font-semibold text-foreground mb-4">Submission Guidelines</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h3 className="font-semibold text-foreground mb-2">Manuscript Requirements</h3>
+              <ul className="text-muted-foreground space-y-1 text-sm">
+                <li>• Original research articles (3,000-8,000 words)</li>
+                <li>• Review articles (5,000-12,000 words)</li>
+                <li>• Case studies (1,500-3,000 words)</li>
+                <li>• Figures and tables with appropriate captions</li>
+                <li>• References in Vancouver style</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold text-foreground mb-2">File Formats</h3>
+              <ul className="text-muted-foreground space-y-1 text-sm">
+                <li>• Manuscript: Word (.docx) or LaTeX (.tex)</li>
+                <li>• Figures: TIFF, PNG, or EPS (min 300 DPI)</li>
+                <li>• Tables: Excel (.xlsx) or embedded in manuscript</li>
+                <li>• Maximum file size: 50 MB</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Submission Form */}
+        <form onSubmit={handleSubmit} className="space-y-8">
+          {/* Author Information */}
+          <div className="bg-card rounded-lg border border-border p-6">
+            <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center">
+              <User className="w-5 h-5 mr-2" />
+              Author Information
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Corresponding Author Email *
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  required
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  placeholder="your.email@institution.edu"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Institution/Affiliation *
+                </label>
+                <input
+                  type="text"
+                  name="affiliation"
+                  required
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  value={formData.affiliation}
+                  onChange={handleInputChange}
+                  placeholder="University/Institution Name"
+                />
+              </div>
+            </div>
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-foreground mb-2">
+                All Authors (in order) *
+              </label>
+              <textarea
+                name="authors"
+                required
+                rows={3}
+                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                value={formData.authors}
+                onChange={handleInputChange}
+                placeholder="Last name, First name¹; Last name, First name²; etc. (include affiliations as superscript numbers)"
+              />
+            </div>
+          </div>
+
+          {/* Manuscript Information */}
+          <div className="bg-card rounded-lg border border-border p-6">
+            <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center">
+              <FileText className="w-5 h-5 mr-2" />
+              Manuscript Details
+            </h3>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Article Title *
+                </label>
+                <input
+                  type="text"
+                  name="title"
+                  required
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  value={formData.title}
+                  onChange={handleInputChange}
+                  placeholder="Enter your article title"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Abstract *
+                </label>
+                <textarea
+                  name="abstract"
+                  required
+                  rows={6}
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  value={formData.abstract}
+                  onChange={handleInputChange}
+                  placeholder="Provide a comprehensive abstract (250-350 words) including background, methods, results, and conclusions"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Keywords *
+                </label>
+                <input
+                  type="text"
+                  name="keywords"
+                  required
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  value={formData.keywords}
+                  onChange={handleInputChange}
+                  placeholder="3-6 keywords separated by commas"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* File Upload */}
+          <div className="bg-card rounded-lg border border-border p-6">
+            <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center">
+              <Upload className="w-5 h-5 mr-2" />
+              Manuscript Upload
+            </h3>
+            <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
+              <Upload className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+              <div className="space-y-2">
+                <p className="text-foreground font-medium">Upload your manuscript</p>
+                <p className="text-muted-foreground text-sm">
+                  Supported formats: .docx, .tex, .pdf (max 50MB)
+                </p>
+                <input
+                  type="file"
+                  name="manuscript"
+                  accept=".docx,.tex,.pdf"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  id="manuscript-upload"
+                />
+                <label
+                  htmlFor="manuscript-upload"
+                  className="inline-block bg-primary text-primary-foreground px-6 py-2 rounded-lg font-medium hover:bg-primary/90 transition-colors cursor-pointer"
+                >
+                  Choose File
+                </label>
+                {formData.manuscript && (
+                  <p className="text-sm text-foreground mt-2">
+                    Selected: {(formData.manuscript as File).name}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Submission Notice */}
+          <div className="bg-secondary/20 border border-secondary rounded-lg p-6">
+            <h3 className="font-semibold text-foreground mb-2">Important Note</h3>
+            <p className="text-muted-foreground text-sm">
+              This is a demo submission form. To enable full functionality including user authentication, 
+              file storage, and manuscript tracking, please connect this project to Supabase using the 
+              green Supabase button in the top right of the interface. This will provide secure user 
+              management, database storage, and automated email notifications.
+            </p>
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex justify-center">
+            <button
+              type="submit"
+              className="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors flex items-center space-x-2"
+            >
+              <Upload className="w-5 h-5" />
+              <span>Submit Manuscript</span>
+            </button>
+          </div>
+        </form>
+
+        {/* Next Steps */}
+        <div className="mt-12 bg-card rounded-lg border border-border p-6">
+          <h3 className="text-xl font-semibold text-foreground mb-4">What Happens Next?</h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="text-center">
+              <div className="bg-primary text-primary-foreground rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3 font-semibold">
+                1
+              </div>
+              <h4 className="font-medium text-foreground mb-2">Initial Review</h4>
+              <p className="text-muted-foreground text-sm">
+                Editorial team reviews submission for scope and format compliance (2-3 days)
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="bg-primary text-primary-foreground rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3 font-semibold">
+                2
+              </div>
+              <h4 className="font-medium text-foreground mb-2">Peer Review</h4>
+              <p className="text-muted-foreground text-sm">
+                Double-blind peer review by subject matter experts (4-8 weeks)
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="bg-primary text-primary-foreground rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-3 font-semibold">
+                3
+              </div>
+              <h4 className="font-medium text-foreground mb-2">Decision</h4>
+              <p className="text-muted-foreground text-sm">
+                Editorial decision and author notification with reviewer comments
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Submit;
