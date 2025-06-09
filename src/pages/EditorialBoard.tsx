@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { User, Mail, Award, Globe } from 'lucide-react';
 
@@ -56,7 +57,7 @@ const EditorialBoard = () => {
         {/* Header Section */}
         <div className="text-center mb-16 animate-fade-in-up">
           <div className="inline-flex items-center bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4">
-            <Users className="w-4 h-4 mr-2" />
+            <User className="w-4 h-4 mr-2" />
             Leadership Team
           </div>
           <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">Editorial Board</h1>
