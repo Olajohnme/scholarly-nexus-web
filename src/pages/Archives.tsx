@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { Search, Calendar, Grid2x2 } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const Archives = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -73,6 +74,20 @@ const Archives = () => {
   const years = ["2024", "2023", "2022", "2021", "2020"];
   const subjects = ["Oncology", "Molecular Biology", "Microbiology", "Cardiology", "Pharmacology", "Diagnostics"];
 
+  // Group articles by volume and issue
+  const groupedByVolume = articles.reduce((acc, article) => {
+    const volumeKey = `Volume ${article.volume}`;
+    if (!acc[volumeKey]) {
+      acc[volumeKey] = {};
+    }
+    const issueKey = `Issue ${article.issue}`;
+    if (!acc[volumeKey][issueKey]) {
+      acc[volumeKey][issueKey] = [];
+    }
+    acc[volumeKey][issueKey].push(article);
+    return acc;
+  }, {} as Record<string, Record<string, typeof articles>>);
+
   const filteredArticles = articles.filter(article => {
     const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          article.authors.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -83,6 +98,26 @@ const Archives = () => {
     return matchesSearch && matchesYear && matchesSubject;
   });
 
+  // Group filtered articles by volume and issue
+  const filteredGroupedByVolume = filteredArticles.reduce((acc, article) => {
+    const volumeKey = `Volume ${article.volume}`;
+    if (!acc[volumeKey]) {
+      acc[volumeKey] = {};
+    }
+    const issueKey = `Issue ${article.issue}`;
+    if (!acc[volumeKey][issueKey]) {
+      acc[volumeKey][issueKey] = [];
+    }
+    acc[volumeKey][issueKey].push(article);
+    return acc;
+  }, {} as Record<string, Record<string, typeof articles>>);
+
+  const volumes = Object.keys(filteredGroupedByVolume).sort((a, b) => {
+    const volA = parseInt(a.split(' ')[1]);
+    const volB = parseInt(b.split(' ')[1]);
+    return volB - volA; // Sort in descending order (newest first)
+  });
+
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -90,7 +125,7 @@ const Archives = () => {
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-foreground mb-4">Archives</h1>
           <p className="text-xl text-muted-foreground">
-            Explore our complete collection of published research articles
+            Explore our complete collection of published research articles organized by Volume and Issue
           </p>
         </div>
 
@@ -144,54 +179,84 @@ const Archives = () => {
         {/* Results Count */}
         <div className="mb-6">
           <p className="text-muted-foreground">
-            Showing {filteredArticles.length} article{filteredArticles.length !== 1 ? 's' : ''}
+            Showing {filteredArticles.length} article{filteredArticles.length !== 1 ? 's' : ''} across {volumes.length} volume{volumes.length !== 1 ? 's' : ''}
           </p>
         </div>
 
-        {/* Articles List */}
-        <div className="space-y-6">
-          {filteredArticles.map((article) => (
-            <article key={article.id} className="bg-card rounded-lg border border-border p-6 hover:shadow-md transition-shadow duration-200">
-              <div className="flex flex-col md:flex-row md:items-start md:justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="bg-primary text-primary-foreground px-2 py-1 rounded text-xs font-medium">
-                      {article.subject}
-                    </span>
-                    <span className="text-muted-foreground text-sm">
-                      Vol. {article.volume}, Issue {article.issue} ({article.year})
-                    </span>
-                  </div>
-                  
-                  <h3 className="text-xl font-semibold text-foreground mb-2 hover:text-primary transition-colors cursor-pointer">
-                    {article.title}
-                  </h3>
-                  
-                  <p className="text-muted-foreground mb-3">{article.authors}</p>
-                  
-                  <p className="text-foreground/80 mb-4 line-clamp-3">{article.abstract}</p>
-                  
-                  <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                    <span>Pages: {article.pages}</span>
-                    <span>DOI: {article.doi}</span>
-                  </div>
-                </div>
+        {/* Volume and Issue Organization */}
+        {volumes.length > 0 ? (
+          <Tabs defaultValue={volumes[0]} className="w-full">
+            <TabsList className="grid w-full grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 mb-6">
+              {volumes.map((volume) => (
+                <TabsTrigger key={volume} value={volume} className="text-sm">
+                  {volume}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+            
+            {volumes.map((volume) => (
+              <TabsContent key={volume} value={volume} className="space-y-6">
+                <h2 className="text-2xl font-bold text-foreground mb-4">{volume}</h2>
                 
-                <div className="mt-4 md:mt-0 md:ml-6 flex flex-col gap-2">
-                  <button className="bg-primary text-primary-foreground px-4 py-2 rounded font-medium hover:bg-primary/90 transition-colors">
-                    View PDF
-                  </button>
-                  <button className="border border-border text-foreground px-4 py-2 rounded font-medium hover:bg-secondary transition-colors">
-                    Cite Article
-                  </button>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
-
-        {/* No Results */}
-        {filteredArticles.length === 0 && (
+                {Object.keys(filteredGroupedByVolume[volume])
+                  .sort((a, b) => {
+                    const issueA = parseInt(a.split(' ')[1]);
+                    const issueB = parseInt(b.split(' ')[1]);
+                    return issueB - issueA; // Sort issues in descending order
+                  })
+                  .map((issue) => (
+                    <div key={issue} className="mb-8">
+                      <h3 className="text-xl font-semibold text-foreground mb-4 border-b border-border pb-2">
+                        {issue}
+                      </h3>
+                      
+                      <div className="space-y-4">
+                        {filteredGroupedByVolume[volume][issue].map((article) => (
+                          <article key={article.id} className="bg-card rounded-lg border border-border p-6 hover:shadow-md transition-shadow duration-200">
+                            <div className="flex flex-col md:flex-row md:items-start md:justify-between">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <span className="bg-primary text-primary-foreground px-2 py-1 rounded text-xs font-medium">
+                                    {article.subject}
+                                  </span>
+                                  <span className="text-muted-foreground text-sm">
+                                    Vol. {article.volume}, Issue {article.issue} ({article.year})
+                                  </span>
+                                </div>
+                                
+                                <h4 className="text-lg font-semibold text-foreground mb-2 hover:text-primary transition-colors cursor-pointer">
+                                  {article.title}
+                                </h4>
+                                
+                                <p className="text-muted-foreground mb-3 text-sm">{article.authors}</p>
+                                
+                                <p className="text-foreground/80 mb-4 line-clamp-2 text-sm">{article.abstract}</p>
+                                
+                                <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
+                                  <span>Pages: {article.pages}</span>
+                                  <span>DOI: {article.doi}</span>
+                                </div>
+                              </div>
+                              
+                              <div className="mt-4 md:mt-0 md:ml-6 flex flex-col gap-2">
+                                <button className="bg-primary text-primary-foreground px-3 py-1.5 rounded text-sm font-medium hover:bg-primary/90 transition-colors">
+                                  View PDF
+                                </button>
+                                <button className="border border-border text-foreground px-3 py-1.5 rounded text-sm font-medium hover:bg-secondary transition-colors">
+                                  Cite Article
+                                </button>
+                              </div>
+                            </div>
+                          </article>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+              </TabsContent>
+            ))}
+          </Tabs>
+        ) : (
+          /* No Results */
           <div className="text-center py-12">
             <p className="text-muted-foreground text-lg">No articles found matching your criteria.</p>
             <button
