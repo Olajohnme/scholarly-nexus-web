@@ -28,13 +28,13 @@ const Header = () => {
           </div>
         </div>
 
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center h-24">
           {/* Logo Only */}
           <div className="flex items-center">
             <img 
               src="/lovable-uploads/ef468316-24e7-4192-832f-0d60bd4c22e8.png" 
               alt="IJMMS Logo" 
-              className="h-16 w-auto"
+              className="h-20 w-auto"
             />
           </div>
 
