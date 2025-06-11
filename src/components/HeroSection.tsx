@@ -6,9 +6,17 @@ import { BookOpen, Users, Globe, Award } from 'lucide-react';
 const HeroSection = () => {
   return (
     <section className="relative overflow-hidden">
-      {/* Background with overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/90 to-secondary"></div>
-      <div className="absolute inset-0 bg-black/20"></div>
+      {/* Hospital background image */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url('/lovable-uploads/73c27607-1a80-4adb-b1c0-36e81d790182.png')`
+        }}
+      ></div>
+      
+      {/* Gradient overlay for readability */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/85 to-secondary/90"></div>
+      <div className="absolute inset-0 bg-black/40"></div>
       
       {/* Medical pattern overlay */}
       <div className="absolute inset-0 opacity-10">
