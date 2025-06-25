@@ -9,13 +9,164 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      admin_users: {
+        Row: {
+          created_at: string | null
+          email: string
+          id: string
+          role: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          email: string
+          id?: string
+          role?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string
+          id?: string
+          role?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      published_articles: {
+        Row: {
+          abstract: string
+          authors: string
+          created_at: string | null
+          doi: string
+          id: string
+          issue: number
+          keywords: string
+          pages: string
+          published_at: string | null
+          subject: string | null
+          submission_id: string | null
+          title: string
+          volume: number
+          year: number
+        }
+        Insert: {
+          abstract: string
+          authors: string
+          created_at?: string | null
+          doi: string
+          id?: string
+          issue: number
+          keywords: string
+          pages: string
+          published_at?: string | null
+          subject?: string | null
+          submission_id?: string | null
+          title: string
+          volume: number
+          year: number
+        }
+        Update: {
+          abstract?: string
+          authors?: string
+          created_at?: string | null
+          doi?: string
+          id?: string
+          issue?: number
+          keywords?: string
+          pages?: string
+          published_at?: string | null
+          subject?: string | null
+          submission_id?: string | null
+          title?: string
+          volume?: number
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "published_articles_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      submissions: {
+        Row: {
+          abstract: string
+          admin_notes: string | null
+          affiliation: string
+          authors: string
+          doi: string | null
+          email: string
+          id: string
+          issue: number | null
+          keywords: string
+          manuscript_file_name: string | null
+          manuscript_file_url: string | null
+          pages: string | null
+          published_at: string | null
+          reviewed_at: string | null
+          reviewer_comments: string | null
+          status: string | null
+          submitted_at: string | null
+          title: string
+          volume: number | null
+        }
+        Insert: {
+          abstract: string
+          admin_notes?: string | null
+          affiliation: string
+          authors: string
+          doi?: string | null
+          email: string
+          id?: string
+          issue?: number | null
+          keywords: string
+          manuscript_file_name?: string | null
+          manuscript_file_url?: string | null
+          pages?: string | null
+          published_at?: string | null
+          reviewed_at?: string | null
+          reviewer_comments?: string | null
+          status?: string | null
+          submitted_at?: string | null
+          title: string
+          volume?: number | null
+        }
+        Update: {
+          abstract?: string
+          admin_notes?: string | null
+          affiliation?: string
+          authors?: string
+          doi?: string | null
+          email?: string
+          id?: string
+          issue?: number | null
+          keywords?: string
+          manuscript_file_name?: string | null
+          manuscript_file_url?: string | null
+          pages?: string | null
+          published_at?: string | null
+          reviewed_at?: string | null
+          reviewer_comments?: string | null
+          status?: string | null
+          submitted_at?: string | null
+          title?: string
+          volume?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_admin: {
+        Args: { user_uuid: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never

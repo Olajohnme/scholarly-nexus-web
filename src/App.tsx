@@ -12,6 +12,8 @@ import EditorialBoard from "./pages/EditorialBoard";
 import Archives from "./pages/Archives";
 import Submit from "./pages/Submit";
 import Article from "./pages/Article";
+import AdminAuth from "./pages/AdminAuth";
+import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -23,19 +25,27 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <div className="min-h-screen flex flex-col">
-          <Header />
-          <main className="flex-1">
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/about" element={<About />} />
-              <Route path="/editorial-board" element={<EditorialBoard />} />
-              <Route path="/archives" element={<Archives />} />
-              <Route path="/submit" element={<Submit />} />
-              <Route path="/article/:id" element={<Article />} />
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </main>
-          <Footer />
+          <Routes>
+            <Route path="/admin-auth" element={<AdminAuth />} />
+            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="*" element={
+              <>
+                <Header />
+                <main className="flex-1">
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/about" element={<About />} />
+                    <Route path="/editorial-board" element={<EditorialBoard />} />
+                    <Route path="/archives" element={<Archives />} />
+                    <Route path="/submit" element={<Submit />} />
+                    <Route path="/article/:id" element={<Article />} />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </main>
+                <Footer />
+              </>
+            } />
+          </Routes>
         </div>
       </BrowserRouter>
     </TooltipProvider>

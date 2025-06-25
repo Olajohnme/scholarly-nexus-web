@@ -1,5 +1,7 @@
 
 import React, { useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 import { Upload, FileText, User, Mail } from 'lucide-react';
 
 const Submit = () => {
@@ -12,6 +14,8 @@ const Submit = () => {
     affiliation: '',
     manuscript: null
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -23,11 +27,55 @@ const Submit = () => {
     setFormData(prev => ({ ...prev, manuscript: file }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Here you would integrate with Supabase for actual submission
-    alert('Manuscript submitted successfully! You will receive a confirmation email shortly.');
+    setIsSubmitting(true);
+
+    try {
+      // Submit to database
+      const { data, error } = await supabase
+        .from('submissions')
+        .insert({
+          title: formData.title,
+          abstract: formData.abstract,
+          keywords: formData.keywords,
+          authors: formData.authors,
+          email: formData.email,
+          affiliation: formData.affiliation,
+          manuscript_file_name: formData.manuscript ? (formData.manuscript as File).name : null,
+          status: 'submitted'
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Reset form
+      setFormData({
+        title: '',
+        abstract: '',
+        keywords: '',
+        authors: '',
+        email: '',
+        affiliation: '',
+        manuscript: null
+      });
+
+      toast({
+        title: "Success!",
+        description: "Your manuscript has been submitted successfully. You will receive a confirmation email shortly."
+      });
+
+    } catch (error: any) {
+      console.error('Submission error:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to submit manuscript. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -209,25 +257,15 @@ const Submit = () => {
             </div>
           </div>
 
-          {/* Submission Notice */}
-          <div className="bg-secondary/20 border border-secondary rounded-lg p-6">
-            <h3 className="font-semibold text-foreground mb-2">Important Note</h3>
-            <p className="text-muted-foreground text-sm">
-              This is a demo submission form. To enable full functionality including user authentication, 
-              file storage, and manuscript tracking, please connect this project to Supabase using the 
-              green Supabase button in the top right of the interface. This will provide secure user 
-              management, database storage, and automated email notifications.
-            </p>
-          </div>
-
           {/* Submit Button */}
           <div className="flex justify-center">
             <button
               type="submit"
-              className="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors flex items-center space-x-2"
+              disabled={isSubmitting}
+              className="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Upload className="w-5 h-5" />
-              <span>Submit Manuscript</span>
+              <span>{isSubmitting ? 'Submitting...' : 'Submit Manuscript'}</span>
             </button>
           </div>
         </form>
