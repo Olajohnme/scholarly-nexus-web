@@ -20,6 +20,8 @@ const AdminAuth = () => {
     setLoading(true);
 
     try {
+      console.log('Attempting to sign in with email:', email);
+      
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
@@ -27,24 +29,39 @@ const AdminAuth = () => {
 
       if (error) throw error;
 
+      console.log('Sign in successful, user ID:', data.user.id);
+      console.log('User data:', data.user);
+
       // Check if user is admin
-      const { data: adminData } = await supabase
+      console.log('Checking admin status for user ID:', data.user.id);
+      
+      const { data: adminData, error: adminError } = await supabase
         .from('admin_users')
         .select('*')
-        .eq('user_id', data.user.id)
-        .single();
+        .eq('user_id', data.user.id);
 
-      if (adminData) {
+      console.log('Admin query result:', adminData);
+      console.log('Admin query error:', adminError);
+
+      if (adminError) {
+        console.error('Admin query error:', adminError);
+        throw adminError;
+      }
+
+      if (adminData && adminData.length > 0) {
+        console.log('User is admin, redirecting to dashboard');
         window.location.href = '/admin';
       } else {
+        console.log('User is not admin, signing out');
         await supabase.auth.signOut();
         toast({
           title: "Access Denied",
-          description: "You don't have admin privileges.",
+          description: `You don't have admin privileges. User ID: ${data.user.id}`,
           variant: "destructive"
         });
       }
     } catch (error: any) {
+      console.error('Sign in error:', error);
       toast({
         title: "Error",
         description: error.message || "Failed to sign in",
@@ -69,6 +86,8 @@ const AdminAuth = () => {
       });
 
       if (error) throw error;
+
+      console.log('Sign up successful, user ID:', data.user?.id);
 
       toast({
         title: "Success",
