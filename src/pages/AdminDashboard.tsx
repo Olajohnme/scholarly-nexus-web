@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -248,6 +247,51 @@ const AdminDashboard = () => {
     return <Badge variant={config.variant}>{config.label}</Badge>;
   };
 
+  const handleDownloadManuscript = async (submission: Submission) => {
+    if (!submission.manuscript_file_url || !submission.manuscript_file_name) {
+      toast({
+        title: "Error",
+        description: "No manuscript file available for download.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      // Fetch the file from the URL
+      const response = await fetch(submission.manuscript_file_url);
+      if (!response.ok) {
+        throw new Error('Failed to fetch manuscript file');
+      }
+
+      const blob = await response.blob();
+      
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = submission.manuscript_file_name;
+      document.body.appendChild(link);
+      link.click();
+      
+      // Cleanup
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+
+      toast({
+        title: "Success",
+        description: "Manuscript downloaded successfully."
+      });
+    } catch (error) {
+      console.error('Error downloading manuscript:', error);
+      toast({
+        title: "Error",
+        description: "Failed to download manuscript file.",
+        variant: "destructive"
+      });
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -344,6 +388,7 @@ const AdminDashboard = () => {
                     <TableHead>Status</TableHead>
                     <TableHead>Submitted</TableHead>
                     <TableHead>Volume/Issue</TableHead>
+                    <TableHead>Manuscript</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -367,6 +412,22 @@ const AdminDashboard = () => {
                           ? `Vol ${submission.volume}, Issue ${submission.issue}`
                           : '-'
                         }
+                      </TableCell>
+                      <TableCell>
+                        {submission.manuscript_file_name ? (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleDownloadManuscript(submission)}
+                            className="text-blue-600 hover:text-blue-700"
+                            title="Download manuscript"
+                          >
+                            <Download className="w-4 h-4 mr-1" />
+                            Download
+                          </Button>
+                        ) : (
+                          <span className="text-muted-foreground text-sm">No file</span>
+                        )}
                       </TableCell>
                       <TableCell>
                         <div className="flex space-x-2">
@@ -406,6 +467,23 @@ const AdminDashboard = () => {
                                   <Label className="text-sm font-medium">Keywords</Label>
                                   <p className="text-sm mt-1">{submission.keywords}</p>
                                 </div>
+
+                                {submission.manuscript_file_name && (
+                                  <div>
+                                    <Label className="text-sm font-medium">Manuscript File</Label>
+                                    <div className="flex items-center gap-2 mt-1">
+                                      <span className="text-sm">{submission.manuscript_file_name}</span>
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={() => handleDownloadManuscript(submission)}
+                                      >
+                                        <Download className="w-4 h-4 mr-1" />
+                                        Download
+                                      </Button>
+                                    </div>
+                                  </div>
+                                )}
 
                                 {submission.admin_notes && (
                                   <div>
