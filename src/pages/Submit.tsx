@@ -27,13 +27,43 @@ const Submit = () => {
     setFormData(prev => ({ ...prev, manuscript: file }));
   };
 
+  const uploadManuscriptFile = async (file: File, submissionId: string) => {
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${submissionId}.${fileExt}`;
+      const filePath = `manuscripts/${fileName}`;
+
+      const { data, error } = await supabase.storage
+        .from('manuscripts')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
+
+      if (error) throw error;
+
+      // Get the public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('manuscripts')
+        .getPublicUrl(filePath);
+
+      return {
+        fileName: file.name,
+        fileUrl: publicUrl
+      };
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      throw error;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
     try {
-      // Submit to database
-      const { data, error } = await supabase
+      // First, insert the submission to get the ID
+      const { data: submission, error: insertError } = await supabase
         .from('submissions')
         .insert({
           title: formData.title,
@@ -42,13 +72,33 @@ const Submit = () => {
           authors: formData.authors,
           email: formData.email,
           affiliation: formData.affiliation,
-          manuscript_file_name: formData.manuscript ? (formData.manuscript as File).name : null,
           status: 'submitted'
         })
         .select()
         .single();
 
-      if (error) throw error;
+      if (insertError) throw insertError;
+
+      let manuscriptFileName = null;
+      let manuscriptFileUrl = null;
+
+      // If there's a manuscript file, upload it
+      if (formData.manuscript && submission) {
+        const uploadResult = await uploadManuscriptFile(formData.manuscript as File, submission.id);
+        manuscriptFileName = uploadResult.fileName;
+        manuscriptFileUrl = uploadResult.fileUrl;
+
+        // Update the submission with file information
+        const { error: updateError } = await supabase
+          .from('submissions')
+          .update({
+            manuscript_file_name: manuscriptFileName,
+            manuscript_file_url: manuscriptFileUrl
+          })
+          .eq('id', submission.id);
+
+        if (updateError) throw updateError;
+      }
 
       // Reset form
       setFormData({
@@ -60,6 +110,12 @@ const Submit = () => {
         affiliation: '',
         manuscript: null
       });
+
+      // Reset file input
+      const fileInput = document.getElementById('manuscript-upload') as HTMLInputElement;
+      if (fileInput) {
+        fileInput.value = '';
+      }
 
       toast({
         title: "Success!",

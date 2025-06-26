@@ -7,6 +7,7 @@ import { StatisticsCards } from '@/components/admin/StatisticsCards';
 import { SubmissionsTable } from '@/components/admin/SubmissionsTable';
 import { ViewDetailsDialog } from '@/components/admin/ViewDetailsDialog';
 import { EditSubmissionDialog } from '@/components/admin/EditSubmissionDialog';
+import { AdminHeader } from '@/components/admin/AdminHeader';
 import { Button } from '@/components/ui/button';
 import { Submission, EditFormState } from '@/types/admin';
 
@@ -87,10 +88,7 @@ const AdminDashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground">Admin Dashboard</h1>
-          <p className="text-muted-foreground">Manage article submissions and publications</p>
-        </div>
+        <AdminHeader />
 
         <StatisticsCards submissions={submissions} />
 
