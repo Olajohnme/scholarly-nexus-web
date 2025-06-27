@@ -31,7 +31,7 @@ const Submit = () => {
     try {
       const fileExt = file.name.split('.').pop();
       const fileName = `${submissionId}.${fileExt}`;
-      const filePath = `manuscripts/${fileName}`;
+      const filePath = `${fileName}`;
 
       const { data, error } = await supabase.storage
         .from('manuscripts')

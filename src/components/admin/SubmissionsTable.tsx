@@ -1,18 +1,17 @@
 
 import React from 'react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Eye, Edit, Check, X, Download } from 'lucide-react';
-import { format } from 'date-fns';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Eye, Edit, Download } from 'lucide-react';
 import { Submission } from '@/types/admin';
-import { useToast } from '@/hooks/use-toast';
 
 interface SubmissionsTableProps {
   submissions: Submission[];
   onViewDetails: (submission: Submission) => void;
   onEditSubmission: (submission: Submission) => void;
-  onStatusUpdate: (submissionId: string, status: string) => void;
+  onStatusUpdate: (submissionId: string, newStatus: string) => void;
 }
 
 export const SubmissionsTable: React.FC<SubmissionsTableProps> = ({
@@ -21,59 +20,32 @@ export const SubmissionsTable: React.FC<SubmissionsTableProps> = ({
   onEditSubmission,
   onStatusUpdate
 }) => {
-  const { toast } = useToast();
-
-  const getStatusBadge = (status: string) => {
-    const statusConfig = {
-      submitted: { label: 'Submitted', variant: 'secondary' as const },
-      under_review: { label: 'Under Review', variant: 'default' as const },
-      revision_requested: { label: 'Revision Requested', variant: 'outline' as const },
-      accepted: { label: 'Accepted', variant: 'default' as const },
-      rejected: { label: 'Rejected', variant: 'destructive' as const }
-    };
-    
-    const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.submitted;
-    return <Badge variant={config.variant}>{config.label}</Badge>;
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'submitted':
+        return 'bg-blue-100 text-blue-800';
+      case 'under_review':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'revision_requested':
+        return 'bg-orange-100 text-orange-800';
+      case 'accepted':
+        return 'bg-green-100 text-green-800';
+      case 'rejected':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
   };
 
-  const handleDownloadManuscript = async (submission: Submission) => {
-    if (!submission.manuscript_file_url || !submission.manuscript_file_name) {
-      toast({
-        title: "Error",
-        description: "No manuscript file available for download.",
-        variant: "destructive"
-      });
-      return;
-    }
-
-    try {
-      const response = await fetch(submission.manuscript_file_url);
-      if (!response.ok) {
-        throw new Error('Failed to fetch manuscript file');
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
+  const handleDownload = (submission: Submission) => {
+    if (submission.manuscript_file_url) {
       const link = document.createElement('a');
-      link.href = url;
-      link.download = submission.manuscript_file_name;
+      link.href = submission.manuscript_file_url;
+      link.download = submission.manuscript_file_name || `manuscript-${submission.id}`;
+      link.target = '_blank';
       document.body.appendChild(link);
       link.click();
-      
-      window.URL.revokeObjectURL(url);
       document.body.removeChild(link);
-
-      toast({
-        title: "Success",
-        description: "Manuscript downloaded successfully."
-      });
-    } catch (error) {
-      console.error('Error downloading manuscript:', error);
-      toast({
-        title: "Error",
-        description: "Failed to download manuscript file.",
-        variant: "destructive"
-      });
     }
   };
 
@@ -84,9 +56,9 @@ export const SubmissionsTable: React.FC<SubmissionsTableProps> = ({
           <TableRow>
             <TableHead>Title</TableHead>
             <TableHead>Authors</TableHead>
+            <TableHead>Email</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead>Submitted</TableHead>
-            <TableHead>Volume/Issue</TableHead>
+            <TableHead>Submitted Date</TableHead>
             <TableHead>Manuscript</TableHead>
             <TableHead>Actions</TableHead>
           </TableRow>
@@ -100,29 +72,41 @@ export const SubmissionsTable: React.FC<SubmissionsTableProps> = ({
               <TableCell className="max-w-xs truncate">
                 {submission.authors}
               </TableCell>
+              <TableCell>{submission.email}</TableCell>
               <TableCell>
-                {getStatusBadge(submission.status)}
+                <Select
+                  value={submission.status}
+                  onValueChange={(value) => onStatusUpdate(submission.id, value)}
+                >
+                  <SelectTrigger className="w-40">
+                    <SelectValue>
+                      <Badge className={getStatusColor(submission.status)}>
+                        {submission.status.replace('_', ' ')}
+                      </Badge>
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="submitted">Submitted</SelectItem>
+                    <SelectItem value="under_review">Under Review</SelectItem>
+                    <SelectItem value="revision_requested">Revision Requested</SelectItem>
+                    <SelectItem value="accepted">Accepted</SelectItem>
+                    <SelectItem value="rejected">Rejected</SelectItem>
+                  </SelectContent>
+                </Select>
               </TableCell>
               <TableCell>
-                {format(new Date(submission.submitted_at), 'MMM dd, yyyy')}
+                {new Date(submission.submitted_at).toLocaleDateString()}
               </TableCell>
               <TableCell>
-                {submission.volume && submission.issue 
-                  ? `Vol ${submission.volume}, Issue ${submission.issue}`
-                  : '-'
-                }
-              </TableCell>
-              <TableCell>
-                {submission.manuscript_file_name ? (
+                {submission.manuscript_file_url ? (
                   <Button
-                    variant="ghost"
+                    onClick={() => handleDownload(submission)}
+                    variant="outline"
                     size="sm"
-                    onClick={() => handleDownloadManuscript(submission)}
-                    className="text-blue-600 hover:text-blue-700"
-                    title="Download manuscript"
+                    className="flex items-center space-x-1"
                   >
-                    <Download className="w-4 h-4 mr-1" />
-                    Download
+                    <Download className="w-4 h-4" />
+                    <span>Download</span>
                   </Button>
                 ) : (
                   <span className="text-muted-foreground text-sm">No file</span>
@@ -130,39 +114,31 @@ export const SubmissionsTable: React.FC<SubmissionsTableProps> = ({
               </TableCell>
               <TableCell>
                 <div className="flex space-x-2">
-                  <Button variant="ghost" size="sm" onClick={() => onViewDetails(submission)}>
+                  <Button
+                    onClick={() => onViewDetails(submission)}
+                    variant="outline"
+                    size="sm"
+                  >
                     <Eye className="w-4 h-4" />
                   </Button>
-
-                  <Button variant="ghost" size="sm" onClick={() => onEditSubmission(submission)}>
+                  <Button
+                    onClick={() => onEditSubmission(submission)}
+                    variant="outline"
+                    size="sm"
+                  >
                     <Edit className="w-4 h-4" />
                   </Button>
-
-                  {submission.status !== 'accepted' && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onStatusUpdate(submission.id, 'accepted')}
-                      className="text-green-600 hover:text-green-700"
-                    >
-                      <Check className="w-4 h-4" />
-                    </Button>
-                  )}
-
-                  {submission.status !== 'rejected' && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onStatusUpdate(submission.id, 'rejected')}
-                      className="text-red-600 hover:text-red-700"
-                    >
-                      <X className="w-4 h-4" />
-                    </Button>
-                  )}
                 </div>
               </TableCell>
             </TableRow>
           ))}
+          {submissions.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={7} className="text-center py-4 text-muted-foreground">
+                No submissions found
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </div>
