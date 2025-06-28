@@ -55,12 +55,16 @@ LANGUAGE plpgsql
 SECURITY DEFINER SET search_path = ''
 AS $$
 BEGIN
-    INSERT INTO public.user_profiles (user_id, first_name, last_name, email)
+    INSERT INTO public.user_profiles (user_id, first_name, middle_name_initial, last_name, email, phone_number, affiliated_institution, academic_qualification)
     VALUES (
         NEW.id,
         COALESCE(NEW.raw_user_meta_data->>'first_name', ''),
+        COALESCE(NEW.raw_user_meta_data->>'middle_name_initial', NULL),
         COALESCE(NEW.raw_user_meta_data->>'last_name', ''),
-        NEW.email
+        NEW.email,
+        COALESCE(NEW.raw_user_meta_data->>'phone_number', NULL),
+        COALESCE(NEW.raw_user_meta_data->>'affiliated_institution', ''),
+        COALESCE(NEW.raw_user_meta_data->>'academic_qualification', '')
     );
     RETURN NEW;
 END;
