@@ -112,6 +112,7 @@ export type Database = {
           status: string | null
           submitted_at: string | null
           title: string
+          user_id: string | null
           volume: number | null
         }
         Insert: {
@@ -133,6 +134,7 @@ export type Database = {
           status?: string | null
           submitted_at?: string | null
           title: string
+          user_id?: string | null
           volume?: number | null
         }
         Update: {
@@ -154,7 +156,50 @@ export type Database = {
           status?: string | null
           submitted_at?: string | null
           title?: string
+          user_id?: string | null
           volume?: number | null
+        }
+        Relationships: []
+      }
+      user_profiles: {
+        Row: {
+          academic_qualification: string
+          affiliated_institution: string
+          created_at: string | null
+          email: string
+          first_name: string
+          id: string
+          last_name: string
+          middle_name_initial: string | null
+          phone_number: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          academic_qualification: string
+          affiliated_institution: string
+          created_at?: string | null
+          email: string
+          first_name: string
+          id?: string
+          last_name: string
+          middle_name_initial?: string | null
+          phone_number?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          academic_qualification?: string
+          affiliated_institution?: string
+          created_at?: string | null
+          email?: string
+          first_name?: string
+          id?: string
+          last_name?: string
+          middle_name_initial?: string | null
+          phone_number?: string | null
+          updated_at?: string | null
+          user_id?: string
         }
         Relationships: []
       }

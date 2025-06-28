@@ -12,6 +12,8 @@ import EditorialBoard from "./pages/EditorialBoard";
 import Archives from "./pages/Archives";
 import Submit from "./pages/Submit";
 import Article from "./pages/Article";
+import Auth from "./pages/Auth";
+import Dashboard from "./pages/Dashboard";
 import AdminAuth from "./pages/AdminAuth";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
@@ -26,6 +28,8 @@ const App = () => (
       <BrowserRouter>
         <div className="min-h-screen flex flex-col">
           <Routes>
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/admin-auth" element={<AdminAuth />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="*" element={
