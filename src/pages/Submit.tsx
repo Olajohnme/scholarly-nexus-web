@@ -1,55 +1,21 @@
+
 import React, { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { useAuth } from '@/hooks/useAuth';
-import { Upload, FileText, User, Mail, LogOut } from 'lucide-react';
-import { Navigate, Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
+import { Upload, FileText, User, Mail } from 'lucide-react';
 
 const Submit = () => {
-  const { user, profile, loading, signOut } = useAuth();
   const [formData, setFormData] = useState({
     title: '',
     abstract: '',
     keywords: '',
+    authors: '',
+    email: '',
+    affiliation: '',
     manuscript: null
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
-
-  // Show loading spinner while checking auth
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-          <p className="mt-4 text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  // Redirect to auth if not logged in
-  if (!user) {
-    return <Navigate to="/auth" replace />;
-  }
-
-  // Show message if profile is incomplete
-  if (!profile) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center max-w-md">
-          <h1 className="text-2xl font-bold mb-4">Profile Setup Required</h1>
-          <p className="text-muted-foreground mb-4">
-            Please complete your profile setup before submitting articles.
-          </p>
-          <Link to="/auth">
-            <Button>Complete Profile</Button>
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -96,18 +62,17 @@ const Submit = () => {
     setIsSubmitting(true);
 
     try {
-      // Insert submission with user_id
+      // First, insert the submission to get the ID
       const { data: submission, error: insertError } = await supabase
         .from('submissions')
         .insert({
           title: formData.title,
           abstract: formData.abstract,
           keywords: formData.keywords,
-          authors: `${profile.last_name}, ${profile.first_name}${profile.middle_name_initial ? ' ' + profile.middle_name_initial : ''}`,
-          email: profile.email,
-          affiliation: profile.affiliated_institution,
-          status: 'submitted',
-          user_id: user.id
+          authors: formData.authors,
+          email: formData.email,
+          affiliation: formData.affiliation,
+          status: 'submitted'
         })
         .select()
         .single();
@@ -140,6 +105,9 @@ const Submit = () => {
         title: '',
         abstract: '',
         keywords: '',
+        authors: '',
+        email: '',
+        affiliation: '',
         manuscript: null
       });
 
@@ -151,7 +119,7 @@ const Submit = () => {
 
       toast({
         title: "Success!",
-        description: "Your manuscript has been submitted successfully. You can track its progress in your dashboard."
+        description: "Your manuscript has been submitted successfully. You will receive a confirmation email shortly."
       });
 
     } catch (error: any) {
@@ -169,23 +137,12 @@ const Submit = () => {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* User Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-4xl font-bold text-foreground mb-2">Submit Your Research</h1>
-            <p className="text-muted-foreground">
-              Welcome, {profile.first_name} {profile.last_name} ({profile.affiliated_institution})
-            </p>
-          </div>
-          <div className="flex items-center space-x-4">
-            <Link to="/dashboard">
-              <Button variant="outline">My Submissions</Button>
-            </Link>
-            <Button variant="outline" onClick={signOut}>
-              <LogOut className="w-4 h-4 mr-2" />
-              Sign Out
-            </Button>
-          </div>
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-foreground mb-4">Submit Your Research</h1>
+          <p className="text-xl text-muted-foreground">
+            Share your groundbreaking research with the global scientific community
+          </p>
         </div>
 
         {/* Submission Guidelines */}
@@ -216,29 +173,56 @@ const Submit = () => {
 
         {/* Submission Form */}
         <form onSubmit={handleSubmit} className="space-y-8">
-          {/* Author Information - Pre-filled */}
+          {/* Author Information */}
           <div className="bg-card rounded-lg border border-border p-6">
             <h3 className="text-xl font-semibold text-foreground mb-4 flex items-center">
               <User className="w-5 h-5 mr-2" />
               Author Information
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm text-muted-foreground">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <span className="font-medium">Author:</span> {profile.first_name} {profile.middle_name_initial} {profile.last_name}
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Corresponding Author Email *
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  required
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  placeholder="your.email@institution.edu"
+                />
               </div>
               <div>
-                <span className="font-medium">Email:</span> {profile.email}
-              </div>
-              <div>
-                <span className="font-medium">Institution:</span> {profile.affiliated_institution}
-              </div>
-              <div>
-                <span className="font-medium">Qualification:</span> {profile.academic_qualification}
+                <label className="block text-sm font-medium text-foreground mb-2">
+                  Institution/Affiliation *
+                </label>
+                <input
+                  type="text"
+                  name="affiliation"
+                  required
+                  className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                  value={formData.affiliation}
+                  onChange={handleInputChange}
+                  placeholder="University/Institution Name"
+                />
               </div>
             </div>
-            <p className="text-xs text-muted-foreground mt-4">
-              Author information is automatically filled from your profile. To update, please contact support.
-            </p>
+            <div className="mt-4">
+              <label className="block text-sm font-medium text-foreground mb-2">
+                All Authors (in order) *
+              </label>
+              <textarea
+                name="authors"
+                required
+                rows={3}
+                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                value={formData.authors}
+                onChange={handleInputChange}
+                placeholder="Last name, First name¹; Last name, First name²; etc. (include affiliations as superscript numbers)"
+              />
+            </div>
           </div>
 
           {/* Manuscript Information */}
