@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -136,6 +135,15 @@ const Submit = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <style jsx>{`
+        .authors-superscript {
+          font-variant-numeric: normal;
+        }
+        .authors-superscript::placeholder {
+          font-variant-numeric: normal;
+        }
+      `}</style>
+      
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Header */}
         <div className="text-center mb-12">
@@ -217,11 +225,18 @@ const Submit = () => {
                 name="authors"
                 required
                 rows={3}
-                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent authors-superscript"
+                style={{
+                  fontFeatureSettings: '"sups" 1',
+                  fontVariantNumeric: 'ordinal'
+                }}
                 value={formData.authors}
                 onChange={handleInputChange}
                 placeholder="Last name, First name¹; Last name, First name²; etc. (include affiliations as superscript numbers)"
               />
+              <p className="text-xs text-muted-foreground mt-1">
+                Numbers will automatically appear in superscript format (e.g., ¹, ², ³)
+              </p>
             </div>
           </div>
 
