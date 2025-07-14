@@ -1,8 +1,9 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Upload, FileText, User, Mail } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const Submit = () => {
   const [formData, setFormData] = useState({
@@ -15,7 +16,37 @@ const Submit = () => {
     manuscript: null
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Check if user is authenticated
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session?.user) {
+        setUser(session.user);
+        // Pre-fill email if available
+        setFormData(prev => ({ ...prev, email: session.user.email || '' }));
+      }
+      setLoading(false);
+    };
+
+    checkUser();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (session?.user) {
+        setUser(session.user);
+        setFormData(prev => ({ ...prev, email: session.user.email || '' }));
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -59,6 +90,17 @@ const Submit = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!user) {
+      toast({
+        title: "Authentication Required",
+        description: "Please log in to submit your manuscript.",
+        variant: "destructive"
+      });
+      navigate('/admin-auth');
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -66,6 +108,7 @@ const Submit = () => {
       const { data: submission, error: insertError } = await supabase
         .from('submissions')
         .insert({
+          user_id: user.id, // This is crucial for RLS
           title: formData.title,
           abstract: formData.abstract,
           keywords: formData.keywords,
@@ -106,7 +149,7 @@ const Submit = () => {
         abstract: '',
         keywords: '',
         authors: '',
-        email: '',
+        email: user.email || '',
         affiliation: '',
         manuscript: null
       });
@@ -134,6 +177,36 @@ const Submit = () => {
     }
   };
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center max-w-md mx-auto px-4">
+          <h1 className="text-2xl font-bold text-foreground mb-4">Authentication Required</h1>
+          <p className="text-muted-foreground mb-6">
+            You need to be logged in to submit manuscripts. Please sign in or create an account to continue.
+          </p>
+          <button
+            onClick={() => navigate('/admin-auth')}
+            className="bg-primary text-primary-foreground px-6 py-3 rounded-lg font-semibold hover:bg-primary/90 transition-colors"
+          >
+            Sign In / Sign Up
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -142,6 +215,9 @@ const Submit = () => {
           <h1 className="text-4xl font-bold text-foreground mb-4">Submit Your Research</h1>
           <p className="text-xl text-muted-foreground">
             Share your groundbreaking research with the global scientific community
+          </p>
+          <p className="text-sm text-muted-foreground mt-2">
+            Logged in as: {user.email}
           </p>
         </div>
 
