@@ -1,78 +1,63 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, Calendar, Grid2x2 } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+
+interface PublishedArticle {
+  id: string;
+  title: string;
+  authors: string;
+  abstract: string;
+  keywords: string;
+  volume: number;
+  issue: number;
+  pages: string;
+  year: number;
+  doi: string;
+  subject: string | null;
+  published_at: string;
+}
 
 const Archives = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('');
+  const [articles, setArticles] = useState<PublishedArticle[]>([]);
+  const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
-  const articles = [
-    {
-      id: 1,
-      title: "Novel Biomarkers in Early Cancer Detection: A Comprehensive Review",
-      authors: "Smith, J.A., Johnson, M.B., Williams, K.C.",
-      year: "2024",
-      volume: "12",
-      issue: "3",
-      pages: "45-62",
-      subject: "Oncology",
-      abstract: "Recent advances in molecular biology have opened new avenues for early cancer detection through novel biomarkers...",
-      doi: "10.1234/ijmms.2024.001"
-    },
-    {
-      id: 2,
-      title: "CRISPR-Cas9 Applications in Rare Genetic Disorders",
-      authors: "Chen, L., Rodriguez, A.M., Thompson, R.K.",
-      year: "2024",
-      volume: "12",
-      issue: "2",
-      pages: "23-38",
-      subject: "Molecular Biology",
-      abstract: "Gene editing technologies, particularly CRISPR-Cas9, have shown remarkable potential in treating rare genetic disorders...",
-      doi: "10.1234/ijmms.2024.002"
-    },
-    {
-      id: 3,
-      title: "Molecular Mechanisms of Drug Resistance in Tuberculosis",
-      authors: "Patel, S.R., Kumar, V., Anderson, D.J.",
-      year: "2024",
-      volume: "12",
-      issue: "1",
-      pages: "1-18",
-      subject: "Microbiology",
-      abstract: "Understanding the molecular basis of drug resistance in Mycobacterium tuberculosis is crucial...",
-      doi: "10.1234/ijmms.2024.003"
-    },
-    {
-      id: 4,
-      title: "Advances in Personalized Medicine for Cardiovascular Disease",
-      authors: "Brown, A.L., Davis, M.K., Miller, J.P.",
-      year: "2023",
-      volume: "11",
-      issue: "12",
-      pages: "234-251",
-      subject: "Cardiology",
-      abstract: "Personalized medicine approaches are revolutionizing cardiovascular disease treatment and prevention...",
-      doi: "10.1234/ijmms.2023.045"
-    },
-    {
-      id: 5,
-      title: "Nanotechnology in Drug Delivery Systems",
-      authors: "Lee, S.Y., Park, H.J., Kim, D.S.",
-      year: "2023",
-      volume: "11",
-      issue: "11",
-      pages: "198-215",
-      subject: "Pharmacology",
-      abstract: "Nanotechnology-based drug delivery systems offer promising solutions for targeted therapy...",
-      doi: "10.1234/ijmms.2023.044"
+  useEffect(() => {
+    fetchPublishedArticles();
+  }, []);
+
+  const fetchPublishedArticles = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('published_articles')
+        .select('*')
+        .order('year', { ascending: false })
+        .order('volume', { ascending: false })
+        .order('issue', { ascending: false });
+
+      if (error) throw error;
+      setArticles(data || []);
+    } catch (error) {
+      console.error('Error fetching published articles:', error);
+      toast({
+        title: "Error",
+        description: "Failed to fetch published articles.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
-  const years = ["2024", "2023", "2022", "2021", "2020"];
-  const subjects = ["Oncology", "Molecular Biology", "Microbiology", "Cardiology", "Pharmacology", "Diagnostics"];
+  // Get unique years and subjects from the fetched articles
+  const years = [...new Set(articles.map(article => article.year.toString()))].sort((a, b) => parseInt(b) - parseInt(a));
+  const subjects = [...new Set(articles.map(article => article.subject).filter(Boolean))].sort();
 
   // Group articles by volume and issue
   const groupedByVolume = articles.reduce((acc, article) => {
@@ -86,13 +71,14 @@ const Archives = () => {
     }
     acc[volumeKey][issueKey].push(article);
     return acc;
-  }, {} as Record<string, Record<string, typeof articles>>);
+  }, {} as Record<string, Record<string, PublishedArticle[]>>);
 
   const filteredArticles = articles.filter(article => {
     const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          article.authors.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         article.abstract.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesYear = !selectedYear || article.year === selectedYear;
+                         article.abstract.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         article.keywords.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesYear = !selectedYear || article.year.toString() === selectedYear;
     const matchesSubject = !selectedSubject || article.subject === selectedSubject;
     
     return matchesSearch && matchesYear && matchesSubject;
@@ -110,13 +96,24 @@ const Archives = () => {
     }
     acc[volumeKey][issueKey].push(article);
     return acc;
-  }, {} as Record<string, Record<string, typeof articles>>);
+  }, {} as Record<string, Record<string, PublishedArticle[]>>);
 
   const volumes = Object.keys(filteredGroupedByVolume).sort((a, b) => {
     const volA = parseInt(a.split(' ')[1]);
     const volB = parseInt(b.split(' ')[1]);
     return volB - volA; // Sort in descending order (newest first)
   });
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
+          <p className="mt-4 text-muted-foreground">Loading articles...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -216,9 +213,11 @@ const Archives = () => {
                             <div className="flex flex-col md:flex-row md:items-start md:justify-between">
                               <div className="flex-1">
                                 <div className="flex items-center gap-2 mb-2">
-                                  <span className="bg-primary text-primary-foreground px-2 py-1 rounded text-xs font-medium">
-                                    {article.subject}
-                                  </span>
+                                  {article.subject && (
+                                    <span className="bg-primary text-primary-foreground px-2 py-1 rounded text-xs font-medium">
+                                      {article.subject}
+                                    </span>
+                                  )}
                                   <span className="text-muted-foreground text-sm">
                                     Vol. {article.volume}, Issue {article.issue} ({article.year})
                                   </span>
@@ -235,6 +234,7 @@ const Archives = () => {
                                 <div className="flex flex-wrap gap-4 text-xs text-muted-foreground">
                                   <span>Pages: {article.pages}</span>
                                   <span>DOI: {article.doi}</span>
+                                  <span>Keywords: {article.keywords}</span>
                                 </div>
                               </div>
                               
@@ -258,7 +258,7 @@ const Archives = () => {
         ) : (
           /* No Results */
           <div className="text-center py-12">
-            <p className="text-muted-foreground text-lg">No articles found matching your criteria.</p>
+            <p className="text-muted-foreground text-lg">No published articles found matching your criteria.</p>
             <button
               onClick={() => {
                 setSearchTerm('');
