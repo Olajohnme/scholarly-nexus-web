@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen, Users, Globe, Award } from 'lucide-react';
@@ -79,7 +78,7 @@ const HeroSection = () => {
           <div className="animate-fade-in-up stagger-3">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">
-                <div className="text-3xl font-bold mb-2">ISSN: 2786-3227</div>
+                <div className="text-3xl font-bold mb-2">e-ISSN: 3026-8192</div>
                 <div className="text-white/80">International Standard</div>
               </div>
               <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20">

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X, Search, BookOpen, Shield } from 'lucide-react';
@@ -21,7 +20,7 @@ const Header = () => {
         {/* Top bar with journal info */}
         <div className="hidden md:flex justify-between items-center py-2 text-sm border-b border-border/50">
           <div className="text-muted-foreground">
-            ISSN: 2786-3227 • Volume 12, Issue 3 (2024)
+            e-ISSN: 3026-8192 • Volume 12, Issue 3 (2024)
           </div>
           <div className="flex items-center space-x-4">
             <div className="text-muted-foreground">
