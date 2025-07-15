@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-import { Search, Calendar, Grid2x2 } from 'lucide-react';
+import { Search, Calendar, Grid2x2, Download, Quote } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -17,6 +18,7 @@ interface AcceptedSubmission {
   doi: string | null;
   submitted_at: string;
   affiliation: string;
+  manuscript_file_url: string | null;
 }
 
 const Archives = () => {
@@ -54,16 +56,44 @@ const Archives = () => {
     }
   };
 
+  const handleViewPDF = (article: AcceptedSubmission) => {
+    if (article.manuscript_file_url) {
+      window.open(article.manuscript_file_url, '_blank');
+    } else {
+      toast({
+        title: "PDF Not Available",
+        description: "The PDF file for this article is not available.",
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleCiteArticle = (article: AcceptedSubmission) => {
+    const year = new Date(article.submitted_at).getFullYear();
+    const citation = `${article.authors} (${year}). ${article.title}. ${article.affiliation}${article.volume ? `, Vol. ${article.volume}` : ''}${article.issue ? `, Issue ${article.issue}` : ''}${article.pages ? `, pp. ${article.pages}` : ''}${article.doi ? `. DOI: ${article.doi}` : ''}.`;
+    
+    navigator.clipboard.writeText(citation).then(() => {
+      toast({
+        title: "Citation Copied",
+        description: "The article citation has been copied to your clipboard.",
+      });
+    }).catch(() => {
+      toast({
+        title: "Copy Failed",
+        description: "Failed to copy citation. Please try selecting and copying manually.",
+        variant: "destructive"
+      });
+    });
+  };
+
   // Get unique years from the fetched articles
   const years = [...new Set(articles.map(article => {
     const year = new Date(article.submitted_at).getFullYear();
     return year.toString();
   }))].sort((a, b) => parseInt(b) - parseInt(a));
 
-  // For now, we'll use affiliation as subject since there's no subject field in submissions
   const subjects = [...new Set(articles.map(article => article.affiliation).filter(Boolean))].sort();
 
-  // Group articles by volume and issue - only include articles that have both volume and issue
   const articlesWithVolumeIssue = articles.filter(article => article.volume && article.issue);
   
   const groupedByVolume = articlesWithVolumeIssue.reduce((acc, article) => {
@@ -91,7 +121,6 @@ const Archives = () => {
     return matchesSearch && matchesYear && matchesSubject;
   });
 
-  // Group filtered articles by volume and issue
   const filteredArticlesWithVolumeIssue = filteredArticles.filter(article => article.volume && article.issue);
   
   const filteredGroupedByVolume = filteredArticlesWithVolumeIssue.reduce((acc, article) => {
@@ -110,10 +139,9 @@ const Archives = () => {
   const volumes = Object.keys(filteredGroupedByVolume).sort((a, b) => {
     const volA = parseInt(a.split(' ')[1]);
     const volB = parseInt(b.split(' ')[1]);
-    return volB - volA; // Sort in descending order (newest first)
+    return volB - volA;
   });
 
-  // Articles without volume/issue (show separately)
   const articlesWithoutVolumeIssue = filteredArticles.filter(article => !article.volume || !article.issue);
 
   if (loading) {
@@ -212,7 +240,7 @@ const Archives = () => {
                   .sort((a, b) => {
                     const issueA = parseInt(a.split(' ')[1]);
                     const issueB = parseInt(b.split(' ')[1]);
-                    return issueB - issueA; // Sort issues in descending order
+                    return issueB - issueA;
                   })
                   .map((issue) => (
                     <div key={issue} className="mb-8">
@@ -250,12 +278,22 @@ const Archives = () => {
                               </div>
                               
                               <div className="mt-4 md:mt-0 md:ml-6 flex flex-col gap-2">
-                                <button className="bg-primary text-primary-foreground px-3 py-1.5 rounded text-sm font-medium hover:bg-primary/90 transition-colors">
+                                <Button 
+                                  onClick={() => handleViewPDF(article)}
+                                  className="text-sm"
+                                  disabled={!article.manuscript_file_url}
+                                >
+                                  <Download className="w-4 h-4 mr-2" />
                                   View PDF
-                                </button>
-                                <button className="border border-border text-foreground px-3 py-1.5 rounded text-sm font-medium hover:bg-secondary transition-colors">
+                                </Button>
+                                <Button 
+                                  variant="outline"
+                                  onClick={() => handleCiteArticle(article)}
+                                  className="text-sm"
+                                >
+                                  <Quote className="w-4 h-4 mr-2" />
                                   Cite Article
-                                </button>
+                                </Button>
                               </div>
                             </div>
                           </article>
@@ -302,12 +340,22 @@ const Archives = () => {
                         </div>
                         
                         <div className="mt-4 md:mt-0 md:ml-6 flex flex-col gap-2">
-                          <button className="bg-primary text-primary-foreground px-3 py-1.5 rounded text-sm font-medium hover:bg-primary/90 transition-colors">
+                          <Button 
+                            onClick={() => handleViewPDF(article)}
+                            className="text-sm"
+                            disabled={!article.manuscript_file_url}
+                          >
+                            <Download className="w-4 h-4 mr-2" />
                             View PDF
-                          </button>
-                          <button className="border border-border text-foreground px-3 py-1.5 rounded text-sm font-medium hover:bg-secondary transition-colors">
+                          </Button>
+                          <Button 
+                            variant="outline"
+                            onClick={() => handleCiteArticle(article)}
+                            className="text-sm"
+                          >
+                            <Quote className="w-4 h-4 mr-2" />
                             Cite Article
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     </article>
