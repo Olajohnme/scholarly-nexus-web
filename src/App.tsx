@@ -14,6 +14,9 @@ import Submit from "./pages/Submit";
 import Article from "./pages/Article";
 import AdminAuth from "./pages/AdminAuth";
 import AdminDashboard from "./pages/AdminDashboard";
+import AuthorGuidelines from "./pages/AuthorGuidelines";
+import PublicationEthics from "./pages/PublicationEthics";
+import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -39,6 +42,9 @@ const App = () => (
                     <Route path="/archives" element={<Archives />} />
                     <Route path="/submit" element={<Submit />} />
                     <Route path="/article/:id" element={<Article />} />
+                    <Route path="/author-guidelines" element={<AuthorGuidelines />} />
+                    <Route path="/publication-ethics" element={<PublicationEthics />} />
+                    <Route path="/contact" element={<Contact />} />
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                 </main>

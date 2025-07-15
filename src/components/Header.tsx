@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X, Search, BookOpen, Shield } from 'lucide-react';
@@ -11,6 +12,8 @@ const Header = () => {
     { name: 'Editorial Board', href: '/editorial-board' },
     { name: 'Archives', href: '/archives' },
     { name: 'Submit Article', href: '/submit' },
+    { name: 'Author Guidelines', href: '/author-guidelines' },
+    { name: 'Publication Ethics', href: '/publication-ethics' },
     { name: 'Contact', href: '/contact' }
   ];
 
