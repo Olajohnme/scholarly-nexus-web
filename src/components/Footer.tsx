@@ -129,7 +129,7 @@ const Footer = () => {
             </div>
             <div className="flex items-center space-x-6">
               <span className="text-primary-foreground/80 text-sm">
-                ISSN: 2786-3227
+                e-ISSN: 3026-8192
               </span>
               <div className="flex space-x-4">
                 <Link to="/privacy" className="text-primary-foreground/80 hover:text-primary-foreground text-sm transition-colors">
