@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, Search, BookOpen, Shield } from 'lucide-react';
+import { Menu, X, Search, BookOpen } from 'lucide-react';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -29,13 +29,6 @@ const Header = () => {
             <div className="text-muted-foreground">
               ijmmslth@yahoo.com • +234 802 416 5579
             </div>
-            <Link 
-              to="/admin-auth" 
-              className="flex items-center space-x-1 text-primary hover:text-primary/80 transition-colors"
-            >
-              <Shield className="w-4 h-4" />
-              <span>Admin</span>
-            </Link>
           </div>
         </div>
 
@@ -68,14 +61,6 @@ const Header = () => {
             <button className="p-2 text-muted-foreground hover:text-primary transition-colors rounded-lg hover:bg-accent">
               <Search className="h-5 w-5" />
             </button>
-            
-            {/* Admin link for mobile */}
-            <Link 
-              to="/admin-auth" 
-              className="md:hidden p-2 text-primary hover:text-primary/80 transition-colors"
-            >
-              <Shield className="h-5 w-5" />
-            </Link>
             
             {/* Mobile menu button */}
             <button 
