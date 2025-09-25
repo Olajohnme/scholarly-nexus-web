@@ -141,13 +141,7 @@ const FeaturedArticles = () => {
               );
             })}
           </div>
-        ) : (
-          <div className="text-center py-12">
-            <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-xl font-semibold text-foreground mb-2">No Published Articles Yet</h3>
-            <p className="text-muted-foreground">Check back soon for the latest research publications.</p>
-          </div>
-        )}
+        ) : null}
 
         {/* CTA Section */}
         <div className="text-center animate-fade-in-up stagger-3">
