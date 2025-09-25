@@ -99,7 +99,7 @@ const HeroSection = () => {
                 <BookOpen className="w-6 h-6 mr-2" />
                 <span className="text-white/90 font-medium">Latest Publication</span>
               </div>
-              <h3 className="text-3xl font-bold mb-4">Volume 12, Issue 3 (2024)</h3>
+              <h3 className="text-3xl font-bold mb-4">Current Issue</h3>
               <p className="text-white/90 text-lg leading-relaxed">
                 Featuring cutting-edge research in clinical medicine, surgical innovations, 
                 public health insights, and breakthrough studies in medical sciences.
