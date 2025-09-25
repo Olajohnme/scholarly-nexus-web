@@ -1,100 +1,95 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Search, Calendar, Grid2x2, Download, Quote } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
 
-interface AcceptedSubmission {
-  id: string;
-  title: string;
-  authors: string;
-  abstract: string;
-  keywords: string;
-  volume: number | null;
-  issue: number | null;
-  pages: string | null;
-  doi: string | null;
-  submitted_at: string;
-  affiliation: string;
-  manuscript_file_url: string | null;
-}
+// Static sample data for archives
+const sampleArchiveArticles = [
+  {
+    id: "1",
+    title: "Advances in Cardiac Surgery: A Comprehensive Review of Modern Techniques",
+    authors: "Dr. John Smith, Dr. Mary Johnson, Prof. Ahmed Hassan",
+    abstract: "This comprehensive review examines the latest advances in cardiac surgical techniques, including minimally invasive procedures, robotic surgery applications, and improved patient outcomes. Our analysis covers data from over 500 procedures performed between 2020-2024.",
+    keywords: "Cardiac Surgery, Minimally Invasive, Robotic Surgery",
+    volume: 15,
+    issue: 2,
+    pages: "12-28",
+    year: 2024,
+    doi: "10.12345/ijmmslth.2024.15.2.001",
+    affiliation: "Department of Cardiovascular Surgery, LAUTECH Teaching Hospital",
+    manuscript_file_url: null
+  },
+  {
+    id: "2", 
+    title: "Novel Approaches to Diabetes Management in Nigerian Healthcare Settings",
+    authors: "Dr. Adebayo Olumide, Dr. Fatima Ibrahim, Dr. Grace Okafor",
+    abstract: "This study investigates innovative diabetes management strategies tailored for Nigerian healthcare contexts, focusing on community-based interventions and culturally appropriate treatment protocols that have shown significant improvement in patient compliance and outcomes.",
+    keywords: "Diabetes, Healthcare Management, Community Health",
+    volume: 15,
+    issue: 2,
+    pages: "45-62",
+    year: 2024,
+    doi: "10.12345/ijmmslth.2024.15.2.002",
+    affiliation: "Department of Endocrinology, LAUTECH Teaching Hospital",
+    manuscript_file_url: null
+  },
+  {
+    id: "3",
+    title: "Antimicrobial Resistance Patterns in Nigerian Hospitals: A Five-Year Analysis",
+    authors: "Prof. Chioma Okwu, Dr. Kabir Mohammed, Dr. Sarah Adeleke",
+    abstract: "A comprehensive analysis of antimicrobial resistance patterns observed in major Nigerian hospitals from 2019-2024, highlighting emerging trends, policy implications, and recommended interventions for combating resistant infections.",
+    keywords: "Antimicrobial Resistance, Hospital Infections, Public Health",
+    volume: 15,
+    issue: 1,
+    pages: "78-95",
+    year: 2024,
+    doi: "10.12345/ijmmslth.2024.15.1.001",
+    affiliation: "Department of Medical Microbiology, LAUTECH Teaching Hospital",
+    manuscript_file_url: null
+  },
+  {
+    id: "4",
+    title: "Mental Health Services in Rural Communities: Challenges and Solutions",
+    authors: "Dr. Oluwaseun Adeyemi, Dr. Rasheed Afolabi",
+    abstract: "An examination of mental health service delivery in rural Nigerian communities, identifying key barriers to access and proposing sustainable intervention strategies based on community engagement and telemedicine approaches.",
+    keywords: "Mental Health, Rural Healthcare, Telemedicine",
+    volume: 14,
+    issue: 3,
+    pages: "15-32",
+    year: 2023,
+    doi: "10.12345/ijmmslth.2023.14.3.001",
+    affiliation: "Department of Psychiatry, LAUTECH Teaching Hospital",
+    manuscript_file_url: null
+  }
+];
 
 const Archives = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedYear, setSelectedYear] = useState('');
   const [selectedSubject, setSelectedSubject] = useState('');
-  const [articles, setArticles] = useState<AcceptedSubmission[]>([]);
-  const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
+  const articles = sampleArchiveArticles;
 
-  useEffect(() => {
-    fetchAcceptedSubmissions();
-  }, []);
-
-  const fetchAcceptedSubmissions = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('submissions')
-        .select('*')
-        .eq('status', 'accepted')
-        .order('submitted_at', { ascending: false });
-
-      if (error) throw error;
-      console.log('Fetched accepted submissions:', data);
-      setArticles(data || []);
-    } catch (error) {
-      console.error('Error fetching accepted submissions:', error);
-      toast({
-        title: "Error",
-        description: "Failed to fetch accepted articles.",
-        variant: "destructive"
-      });
-    } finally {
-      setLoading(false);
-    }
+  const handleViewPDF = (article: typeof sampleArchiveArticles[0]) => {
+    alert("PDF viewing feature will be available with the new Online Journal System integration.");
   };
 
-  const handleViewPDF = (article: AcceptedSubmission) => {
-    if (article.manuscript_file_url) {
-      window.open(article.manuscript_file_url, '_blank');
-    } else {
-      toast({
-        title: "PDF Not Available",
-        description: "The PDF file for this article is not available.",
-        variant: "destructive"
-      });
-    }
-  };
-
-  const handleCiteArticle = (article: AcceptedSubmission) => {
-    const year = new Date(article.submitted_at).getFullYear();
-    const citation = `${article.authors} (${year}). ${article.title}. ${article.affiliation}${article.volume ? `, Vol. ${article.volume}` : ''}${article.issue ? `, Issue ${article.issue}` : ''}${article.pages ? `, pp. ${article.pages}` : ''}${article.doi ? `. DOI: ${article.doi}` : ''}.`;
+  const handleCiteArticle = (article: typeof sampleArchiveArticles[0]) => {
+    const citation = `${article.authors} (${article.year}). ${article.title}. ${article.affiliation}, Vol. ${article.volume}, Issue ${article.issue}, pp. ${article.pages}. DOI: ${article.doi}.`;
     
     navigator.clipboard.writeText(citation).then(() => {
-      toast({
-        title: "Citation Copied",
-        description: "The article citation has been copied to your clipboard.",
-      });
+      alert("Citation copied to clipboard!");
     }).catch(() => {
-      toast({
-        title: "Copy Failed",
-        description: "Failed to copy citation. Please try selecting and copying manually.",
-        variant: "destructive"
-      });
+      alert("Failed to copy citation. Please select and copy manually.");
     });
   };
 
-  // Get unique years from the fetched articles
-  const years = [...new Set(articles.map(article => {
-    const year = new Date(article.submitted_at).getFullYear();
-    return year.toString();
-  }))].sort((a, b) => parseInt(b) - parseInt(a));
+  // Get unique years from the sample articles
+  const years = [...new Set(articles.map(article => article.year.toString()))].sort((a, b) => parseInt(b) - parseInt(a));
 
-  const subjects = [...new Set(articles.map(article => article.affiliation).filter(Boolean))].sort();
+  const subjects = [...new Set(articles.map(article => article.affiliation))].sort();
 
-  const articlesWithVolumeIssue = articles.filter(article => article.volume && article.issue);
+  const articlesWithVolumeIssue = articles;
   
   const groupedByVolume = articlesWithVolumeIssue.reduce((acc, article) => {
     const volumeKey = `Volume ${article.volume}`;
@@ -107,10 +102,10 @@ const Archives = () => {
     }
     acc[volumeKey][issueKey].push(article);
     return acc;
-  }, {} as Record<string, Record<string, AcceptedSubmission[]>>);
+  }, {} as Record<string, Record<string, typeof sampleArchiveArticles>>);
 
   const filteredArticles = articles.filter(article => {
-    const articleYear = new Date(article.submitted_at).getFullYear().toString();
+    const articleYear = article.year.toString();
     const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          article.authors.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          article.abstract.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -121,7 +116,7 @@ const Archives = () => {
     return matchesSearch && matchesYear && matchesSubject;
   });
 
-  const filteredArticlesWithVolumeIssue = filteredArticles.filter(article => article.volume && article.issue);
+  const filteredArticlesWithVolumeIssue = filteredArticles;
   
   const filteredGroupedByVolume = filteredArticlesWithVolumeIssue.reduce((acc, article) => {
     const volumeKey = `Volume ${article.volume}`;
@@ -134,7 +129,7 @@ const Archives = () => {
     }
     acc[volumeKey][issueKey].push(article);
     return acc;
-  }, {} as Record<string, Record<string, AcceptedSubmission[]>>);
+  }, {} as Record<string, Record<string, typeof sampleArchiveArticles>>);
 
   const volumes = Object.keys(filteredGroupedByVolume).sort((a, b) => {
     const volA = parseInt(a.split(' ')[1]);
@@ -142,18 +137,7 @@ const Archives = () => {
     return volB - volA;
   });
 
-  const articlesWithoutVolumeIssue = filteredArticles.filter(article => !article.volume || !article.issue);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-4 text-muted-foreground">Loading articles...</p>
-        </div>
-      </div>
-    );
-  }
+  const articlesWithoutVolumeIssue: typeof sampleArchiveArticles = [];
 
   return (
     <div className="min-h-screen bg-background">
@@ -257,9 +241,9 @@ const Archives = () => {
                                   <span className="bg-primary text-primary-foreground px-2 py-1 rounded text-xs font-medium">
                                     {article.affiliation}
                                   </span>
-                                  <span className="text-muted-foreground text-sm">
-                                    Vol. {article.volume}, Issue {article.issue} ({new Date(article.submitted_at).getFullYear()})
-                                  </span>
+                                   <span className="text-muted-foreground text-sm">
+                                     Vol. {article.volume}, Issue {article.issue} ({article.year})
+                                   </span>
                                 </div>
                                 
                                 <h4 className="text-lg font-semibold text-foreground mb-2 hover:text-primary transition-colors cursor-pointer">
@@ -278,11 +262,11 @@ const Archives = () => {
                               </div>
                               
                               <div className="mt-4 md:mt-0 md:ml-6 flex flex-col gap-2">
-                                <Button 
-                                  onClick={() => handleViewPDF(article)}
-                                  className="text-sm"
-                                  disabled={!article.manuscript_file_url}
-                                >
+                                 <Button 
+                                   onClick={() => handleViewPDF(article)}
+                                   className="text-sm"
+                                   disabled={true}
+                                 >
                                   <Download className="w-4 h-4 mr-2" />
                                   View PDF
                                 </Button>
@@ -319,9 +303,9 @@ const Archives = () => {
                             <span className="bg-primary text-primary-foreground px-2 py-1 rounded text-xs font-medium">
                               {article.affiliation}
                             </span>
-                            <span className="text-muted-foreground text-sm">
-                              Accepted ({new Date(article.submitted_at).getFullYear()})
-                            </span>
+                             <span className="text-muted-foreground text-sm">
+                               Accepted ({article.year})
+                             </span>
                           </div>
                           
                           <h4 className="text-lg font-semibold text-foreground mb-2 hover:text-primary transition-colors cursor-pointer">

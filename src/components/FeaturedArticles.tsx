@@ -2,12 +2,48 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, Users, FileText, ArrowRight } from 'lucide-react';
-import { usePublishedArticles } from '@/hooks/usePublishedArticles';
-import { Skeleton } from '@/components/ui/skeleton';
+
+// Static sample articles for display
+const sampleArticles = [
+  {
+    id: "1",
+    title: "Advances in Cardiac Surgery: A Comprehensive Review of Modern Techniques",
+    authors: "Dr. John Smith, Dr. Mary Johnson, Prof. Ahmed Hassan",
+    abstract: "This comprehensive review examines the latest advances in cardiac surgical techniques, including minimally invasive procedures, robotic surgery applications, and improved patient outcomes. Our analysis covers data from over 500 procedures performed between 2020-2024.",
+    keywords: "Cardiac Surgery, Minimally Invasive, Robotic Surgery",
+    volume: 15,
+    issue: 2,
+    pages: "12-28",
+    year: 2024,
+    subject: "Cardiology"
+  },
+  {
+    id: "2", 
+    title: "Novel Approaches to Diabetes Management in Nigerian Healthcare Settings",
+    authors: "Dr. Adebayo Olumide, Dr. Fatima Ibrahim, Dr. Grace Okafor",
+    abstract: "This study investigates innovative diabetes management strategies tailored for Nigerian healthcare contexts, focusing on community-based interventions and culturally appropriate treatment protocols that have shown significant improvement in patient compliance and outcomes.",
+    keywords: "Diabetes, Healthcare Management, Community Health",
+    volume: 15,
+    issue: 2,
+    pages: "45-62",
+    year: 2024,
+    subject: "Endocrinology"
+  },
+  {
+    id: "3",
+    title: "Antimicrobial Resistance Patterns in Nigerian Hospitals: A Five-Year Analysis",
+    authors: "Prof. Chioma Okwu, Dr. Kabir Mohammed, Dr. Sarah Adeleke",
+    abstract: "A comprehensive analysis of antimicrobial resistance patterns observed in major Nigerian hospitals from 2019-2024, highlighting emerging trends, policy implications, and recommended interventions for combating resistant infections.",
+    keywords: "Antimicrobial Resistance, Hospital Infections, Public Health",
+    volume: 15,
+    issue: 1,
+    pages: "78-95",
+    year: 2024,
+    subject: "Infectious Diseases"
+  }
+];
 
 const FeaturedArticles = () => {
-  const { articles, loading } = usePublishedArticles(3); // Limit to 3 most recent articles
-
   const formatTags = (keywords: string, subject?: string) => {
     const keywordArray = keywords.split(',').map(k => k.trim()).slice(0, 2);
     if (subject && !keywordArray.includes(subject)) {
@@ -16,50 +52,6 @@ const FeaturedArticles = () => {
     return keywordArray.slice(0, 2);
   };
 
-  if (loading) {
-    return (
-      <section className="py-20 bg-gradient-to-br from-gray-50 to-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-4">
-              <FileText className="w-4 h-4 mr-2" />
-              Latest Research
-            </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-              Featured Publications
-            </h2>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Discover the latest groundbreaking research and clinical insights from leading medical professionals 
-              and researchers in our current issue.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="bg-white rounded-2xl shadow-lg border border-border overflow-hidden p-8">
-                <div className="flex justify-between items-start mb-4">
-                  <div className="flex gap-2">
-                    <Skeleton className="h-6 w-20" />
-                    <Skeleton className="h-6 w-16" />
-                  </div>
-                  <Skeleton className="h-5 w-12" />
-                </div>
-                <Skeleton className="h-6 w-full mb-2" />
-                <Skeleton className="h-6 w-3/4 mb-4" />
-                <Skeleton className="h-4 w-full mb-2" />
-                <Skeleton className="h-4 w-2/3 mb-6" />
-                <div className="space-y-2">
-                  <Skeleton className="h-3 w-full" />
-                  <Skeleton className="h-3 w-full" />
-                  <Skeleton className="h-3 w-3/4" />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section className="py-20 bg-gradient-to-br from-gray-50 to-white">
@@ -80,9 +72,8 @@ const FeaturedArticles = () => {
         </div>
 
         {/* Articles Grid */}
-        {articles.length > 0 ? (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
-            {articles.map((article, index) => {
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
+          {sampleArticles.map((article, index) => {
               const tags = formatTags(article.keywords, article.subject);
               return (
                 <article 
@@ -140,8 +131,7 @@ const FeaturedArticles = () => {
                 </article>
               );
             })}
-          </div>
-        ) : null}
+        </div>
 
         {/* CTA Section */}
         <div className="text-center animate-fade-in-up stagger-3">
@@ -162,11 +152,11 @@ const FeaturedArticles = () => {
                 <span>View All Issues</span>
               </Link>
               <Link
-                to="/submit"
+                to="/contact"
                 className="border-2 border-primary text-primary px-8 py-3 rounded-xl font-semibold hover:bg-primary hover:text-primary-foreground transition-colors duration-200 flex items-center justify-center space-x-2"
               >
                 <Users className="w-5 h-5" />
-                <span>Submit Research</span>
+                <span>Contact Us</span>
               </Link>
             </div>
           </div>
