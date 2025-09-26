@@ -11,7 +11,7 @@ const Header = () => {
     { name: 'About', href: '/about' },
     { name: 'Editorial Board', href: '/editorial-board' },
     { name: 'Archives', href: '/archives' },
-    { name: 'Submit Article', href: '/submit' },
+    { name: 'Submit Article', href: 'https://ijmmslth.com/ojs/index.php/ijmms/login', external: true },
     { name: 'Author Guidelines', href: '/author-guidelines' },
     { name: 'Publication Ethics', href: '/publication-ethics' },
     { name: 'Contact', href: '/contact' }
@@ -45,14 +45,27 @@ const Header = () => {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex space-x-8">
             {navigation.map(item => (
-              <Link 
-                key={item.name} 
-                to={item.href} 
-                className="text-foreground hover:text-primary transition-colors duration-200 font-medium relative group"
-              >
-                {item.name}
-                <span className="absolute inset-x-0 bottom-0 h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
-              </Link>
+              item.external ? (
+                <a 
+                  key={item.name} 
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer" 
+                  className="text-foreground hover:text-primary transition-colors duration-200 font-medium relative group"
+                >
+                  {item.name}
+                  <span className="absolute inset-x-0 bottom-0 h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
+                </a>
+              ) : (
+                <Link 
+                  key={item.name} 
+                  to={item.href} 
+                  className="text-foreground hover:text-primary transition-colors duration-200 font-medium relative group"
+                >
+                  {item.name}
+                  <span className="absolute inset-x-0 bottom-0 h-0.5 bg-primary transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></span>
+                </Link>
+              )
             ))}
           </nav>
 
@@ -77,14 +90,27 @@ const Header = () => {
           <div className="md:hidden border-t border-border bg-white">
             <div className="px-2 pt-2 pb-3 space-y-1">
               {navigation.map(item => (
-                <Link 
-                  key={item.name} 
-                  to={item.href} 
-                  className="block px-3 py-3 text-foreground hover:text-primary hover:bg-accent rounded-lg transition-colors duration-200" 
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item.name}
-                </Link>
+                item.external ? (
+                  <a 
+                    key={item.name} 
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer" 
+                    className="block px-3 py-3 text-foreground hover:text-primary hover:bg-accent rounded-lg transition-colors duration-200" 
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.name}
+                  </a>
+                ) : (
+                  <Link 
+                    key={item.name} 
+                    to={item.href} 
+                    className="block px-3 py-3 text-foreground hover:text-primary hover:bg-accent rounded-lg transition-colors duration-200" 
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                )
               ))}
             </div>
           </div>
