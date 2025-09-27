@@ -10,8 +10,8 @@ const Header = () => {
     { name: 'Home', href: '/' },
     { name: 'About', href: '/about' },
     { name: 'Editorial Board', href: '/editorial-board' },
-    { name: 'Archives', href: 'https://ijmmslth.com/ojs/index.php/ijmms/issue/archive', external: true },
-    { name: 'Submit Article', href: 'https://ijmmslth.com/ojs/index.php/ijmms/login', external: true },
+    { name: 'Archives', href: 'https://ijmmslth.com/ojs/index.php/ijmms/issue/archive' },
+    { name: 'Submit Article', href: 'https://ijmmslth.com/ojs/index.php/ijmms/login', },
     { name: 'Author Guidelines', href: '/author-guidelines' },
     { name: 'Publication Ethics', href: '/publication-ethics' },
     { name: 'Contact', href: '/contact' }
