@@ -64,13 +64,15 @@ const HeroSection = () => {
                 <BookOpen className="w-5 h-5" />
                 <span>Submit Your Research</span>
               </Link>
-              <Link
-                to="/archives"
+              <a
+                href="https://ijmmslth.com/ojs/index.php/ijmms/issue/current"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-primary transition-all duration-300 flex items-center space-x-2"
               >
                 <Globe className="w-5 h-5" />
                 <span>Browse Latest Issues</span>
-              </Link>
+              </a>
             </div>
           </div>
 
