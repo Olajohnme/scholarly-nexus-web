@@ -59,7 +59,7 @@ const HeroSection = () => {
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
               <a
                 href="https://ijmmslth.com/ojs/index.php/ijmms/login"
-                target="_blank"
+                target="
                 rel="noopener noreferrer"
                 className="bg-white text-primary px-8 py-4 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 shadow-2xl hover:shadow-xl transform hover:-translate-y-1 flex items-center space-x-2"
               >
@@ -68,7 +68,7 @@ const HeroSection = () => {
               </a>
               <a
                 href="https://ijmmslth.com/ojs/index.php/ijmms/issue/current"
-                target="_blank"
+                target="
                 rel="noopener noreferrer"
                 className="border-2 border-white text-white px-8 py-4 rounded-xl font-semibold hover:bg-white hover:text-primary transition-all duration-300 flex items-center space-x-2"
               >
@@ -110,7 +110,7 @@ const HeroSection = () => {
               </p>
               <a 
                 href="https://ijmmslth.com/ojs/index.php/ijmms/issue/current"
-                target="_blank"
+                target="
                 rel="noopener noreferrer"
                 className="inline-flex items-center mt-6 text-blue-200 hover:text-white transition-colors font-medium"
               >
