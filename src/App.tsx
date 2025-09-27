@@ -8,7 +8,7 @@ import Footer from "./components/Footer";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import EditorialBoard from "./pages/EditorialBoard";
-import Archives from "./archive";
+import Archives from "./pages/archive";
 import Article from "./pages/Article";
 import AuthorGuidelines from "./pages/AuthorGuidelines";
 import PublicationEthics from "./pages/PublicationEthics";
