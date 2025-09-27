@@ -108,12 +108,14 @@ const HeroSection = () => {
                 Featuring cutting-edge research in clinical medicine, surgical innovations, 
                 public health insights, and breakthrough studies in medical sciences.
               </p>
-              <Link 
-                to="/archives" 
+              <a 
+                href="https://ijmmslth.com/ojs/index.php/ijmms/issue/current"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center mt-6 text-blue-200 hover:text-white transition-colors font-medium"
               >
                 Explore Current Issue →
-              </Link>
+              </a>
             </div>
           </div>
         </div>
