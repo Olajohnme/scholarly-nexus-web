@@ -8,7 +8,7 @@ import Footer from "./components/Footer";
 import Index from "./pages/Index";
 import About from "./pages/About";
 import EditorialBoard from "./pages/EditorialBoard";
-import Archives from "./pages/archive";
+import Archives from "./pages/archives";
 import Article from "./pages/Article";
 import AuthorGuidelines from "./pages/AuthorGuidelines";
 import PublicationEthics from "./pages/PublicationEthics";
@@ -27,7 +27,7 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<About />} />
             <Route path="/editorial-board" element={<EditorialBoard />} />
-            <Route path="/archive" element={<Archives />} />
+            <Route path="/archives" element={<Archives />} />
             <Route path="/article/:id" element={<Article />} />
             <Route path="/author-guidelines" element={<AuthorGuidelines />} />
             <Route path="/publication-ethics" element={<PublicationEthics />} />
