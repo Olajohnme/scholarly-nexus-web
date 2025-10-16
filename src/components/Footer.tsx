@@ -96,7 +96,7 @@ const Footer = () => {
                 Opposite CMAC's Office<br />
                 Fourth Floor, Administrative Building<br />
                 PMB 4007, Ogbomoso<br />
-                Oyo State, Nigeria
+                Oyo State, Nigeria.
               </p>
               
               <div className="pt-4">
