@@ -49,8 +49,6 @@ const Header = () => {
                 <a 
                   key={item.name} 
                   href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer" 
                   className="text-foreground hover:text-primary transition-colors duration-200 font-medium relative group"
                 >
                   {item.name}
@@ -94,8 +92,6 @@ const Header = () => {
                   <a 
                     key={item.name} 
                     href={item.href}
-                    target="_blank"
-                    rel="noopener noreferrer" 
                     className="block px-3 py-3 text-foreground hover:text-primary hover:bg-accent rounded-lg transition-colors duration-200" 
                     onClick={() => setIsMenuOpen(false)}
                   >
