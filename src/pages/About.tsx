@@ -117,6 +117,44 @@ const About = () => {
               </div>
             </div>
           </section>
+
+          {/* Licensing Policy */}
+          <section className="bg-card rounded-lg p-8 border border-border">
+            <h2 className="text-2xl font-semibold text-foreground mb-4">Licensing Policy</h2>
+            <div className="space-y-4 text-foreground/80">
+              <p>
+                All articles published in the Integrated Journal of Medicine and Medical Sciences are made available under an open-access license. This allows readers to freely access, read, download, copy, distribute, print, search, or link to the full texts of the articles without prior permission from the publisher or the authors.
+              </p>
+              <p>
+                The journal operates under the <span className="font-semibold text-foreground">Creative Commons Attribution License (CC BY 4.0)</span>. Under this license, users are permitted to share and adapt the material for any purpose, including commercial use, provided appropriate credit is given to the original author(s) and the source.
+              </p>
+              <p>
+                Authors retain the right to be properly acknowledged and cited whenever their work is used or reproduced.
+              </p>
+              <p>
+                By submitting manuscripts to the journal, authors agree that if their article is accepted for publication, it will be distributed under the Creative Commons Attribution License (CC BY 4.0).
+              </p>
+            </div>
+          </section>
+
+          {/* Copyright Policy */}
+          <section className="bg-card rounded-lg p-8 border border-border">
+            <h2 className="text-2xl font-semibold text-foreground mb-4">Copyright Policy</h2>
+            <div className="space-y-4 text-foreground/80">
+              <p>
+                Authors who publish in the Integrated Journal of Medicine and Medical Sciences retain the copyright of their articles.
+              </p>
+              <p>
+                Authors grant the journal the right of first publication of the work. The article will be simultaneously licensed under a <span className="font-semibold text-foreground">Creative Commons Attribution License (CC BY 4.0)</span>, which permits unrestricted use, distribution, and reproduction in any medium, provided the original author(s) and source are properly cited.
+              </p>
+              <p>
+                Authors are permitted to enter into separate contractual arrangements for the non-exclusive distribution of the journal's published version of the work (for example, posting it in institutional repositories or publishing it in a book), provided that the original publication in this journal is acknowledged.
+              </p>
+              <p>
+                The journal also reserves the right to archive and preserve the published articles in electronic databases and indexing services.
+              </p>
+            </div>
+          </section>
         </div>
       </div>
     </div>
