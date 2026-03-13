@@ -56,6 +56,9 @@ const AuthorGuidelines = () => {
                   <li>• Editorial decision within 8 weeks</li>
                   <li>• Online publication</li>
                 </ul>
+                <p className="text-sm mt-3 text-muted-foreground italic">
+                  <span className="font-semibold not-italic text-foreground">Waiver statement:</span> We offer waivers for invited articles, for students, and a good article demonstrating the inability to pay.
+                </p>
               </CardContent>
             </Card>
 
