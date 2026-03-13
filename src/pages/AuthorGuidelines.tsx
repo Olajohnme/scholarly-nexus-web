@@ -66,7 +66,7 @@ const AuthorGuidelines = () => {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm">
-                  <li>• Domestic: ₦30,000</li>
+                  <li>• Domestic: ₦50,000</li>
                   <li>• International: $100 / €70</li>
                   <li>• No hidden charges</li>
                   <li>• Payment after acceptance</li>

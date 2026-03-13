@@ -102,7 +102,7 @@ const Footer = () => {
               <div className="pt-4">
                 <h5 className="font-medium mb-2">Publication Fees</h5>
                 <div className="text-sm space-y-1">
-                  <p>Domestic Authors: ₦30,000</p>
+                  <p>Domestic Authors: ₦50,000</p>
                   <p>International: $100 / €70</p>
                 </div>
               </div>
