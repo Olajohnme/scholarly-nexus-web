@@ -60,7 +60,7 @@ const Footer = () => {
               <li>
                 <a href="https://ojs.ijmmslth.com/index.php/ijmms/submission" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors">
                   Submit Manuscript
-                </Link>
+                </a>
               </li>
               <li>
                 <Link to="/https://ijmmslth.com/ojs/index.php/ijmms/issue/current" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors">
