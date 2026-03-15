@@ -92,6 +92,39 @@ const AuthorGuidelines = () => {
             <h2 className="text-3xl font-bold mb-8 text-center">Detailed Submission Guidelines</h2>
             
             <Accordion type="multiple" className="w-full">
+              <AccordionItem value="author-guidelines">
+                <AccordionTrigger className="text-xl font-semibold">
+                  Author Guidelines
+                </AccordionTrigger>
+                <AccordionContent className="space-y-4">
+                  <p className="text-muted-foreground">
+                    Authors are invited to make a submission to this journal. All submissions will be assessed by an editor to determine whether they meet the aims and scope of this journal. Those considered to be a good fit will be sent for peer review before determining whether they will be accepted or rejected.
+                  </p>
+                  <p className="text-muted-foreground">
+                    Before making a submission, authors are responsible for obtaining permission to publish any material included with the submission, such as photos, documents and datasets. All authors identified on the submission must consent to be identified as an author. Where appropriate, research should be approved by an appropriate ethics committee in accordance with the legal requirements of the study's country.
+                  </p>
+                  <p className="text-muted-foreground">
+                    An editor may desk reject a submission if it does not meet minimum standards of quality. Before submitting, please ensure that the study design and research argument are structured and articulated properly. The title should be concise and the abstract should be able to stand on its own. This will increase the likelihood of reviewers agreeing to review the paper. When you're satisfied that your submission meets this standard, please follow the checklist below to prepare your submission.
+                  </p>
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="submission-checklist">
+                <AccordionTrigger className="text-xl font-semibold">
+                  Submission Preparation Checklist
+                </AccordionTrigger>
+                <AccordionContent className="space-y-4">
+                  <p className="text-muted-foreground mb-2">All submissions must meet the following requirements:</p>
+                  <ul className="space-y-2 text-muted-foreground">
+                    <li>• This submission meets the requirements outlined in the Author Guidelines.</li>
+                    <li>• This submission has not been previously published, nor is it before another journal for consideration.</li>
+                    <li>• All references have been checked for accuracy and completeness.</li>
+                    <li>• All tables and figures have been numbered and labeled.</li>
+                    <li>• Permission has been obtained to publish all photos, datasets and other material provided with this submission.</li>
+                  </ul>
+                </AccordionContent>
+              </AccordionItem>
+
               <AccordionItem value="manuscript-preparation">
                 <AccordionTrigger className="text-xl font-semibold">
                   Manuscript Preparation
@@ -208,23 +241,14 @@ const AuthorGuidelines = () => {
                 </AccordionContent>
               </AccordionItem>
 
-              <AccordionItem value="submission-process">
+              <AccordionItem value="privacy">
                 <AccordionTrigger className="text-xl font-semibold">
-                  Submission Process
+                  Privacy Statement
                 </AccordionTrigger>
                 <AccordionContent className="space-y-4">
-                  <ol className="space-y-3 text-muted-foreground list-decimal list-inside">
-                    <li>Prepare manuscript according to guidelines</li>
-                    <li>Complete online submission form on our website</li>
-                    <li>Upload manuscript file and supplementary materials</li>
-                    <li>Provide complete author information and affiliations</li>
-                    <li>Include conflict of interest statement</li>
-                    <li>Submit for initial editorial review</li>
-                    <li>Respond to reviewer comments if manuscript is sent for peer review</li>
-                    <li>Make required revisions and resubmit</li>
-                    <li>Receive final editorial decision</li>
-                    <li>Complete publication agreement upon acceptance</li>
-                  </ol>
+                  <p className="text-muted-foreground">
+                    The names and email addresses entered in this journal site will be used exclusively for the stated purposes of this journal and will not be made available for any other purpose or to any other party.
+                  </p>
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
