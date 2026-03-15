@@ -11,7 +11,7 @@ const Header = () => {
     { name: 'About', href: '/about' },
     { name: 'Editorial Board', href: '/editorial-board' },
     { name: 'Archives', href: 'https://ijmmslth.com/ojs/index.php/ijmms/issue/archive', external: true },
-    { name: 'Submit Article', href: 'https://ijmmslth.com/ojs/index.php/ijmms/login', external: true },
+    { name: 'Submit Article', href: 'https://ojs.ijmmslth.com/index.php/ijmms/submission', external: true },
     { name: 'Author Guidelines', href: '/author-guidelines' },
     { name: 'Publication Ethics', href: '/publication-ethics' },
     { name: 'Contact', href: '/contact' }

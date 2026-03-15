@@ -58,7 +58,7 @@ const Footer = () => {
                 </Link>
               </li>
               <li>
-                <Link to="/https://ijmmslth.com/ojs/index.php/ijmms/login" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors">
+                <a href="https://ojs.ijmmslth.com/index.php/ijmms/submission" className="text-primary-foreground/80 hover:text-primary-foreground transition-colors">
                   Submit Manuscript
                 </Link>
               </li>
