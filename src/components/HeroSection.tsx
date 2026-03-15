@@ -52,7 +52,7 @@ const HeroSection = () => {
           {/* CTA Buttons */}
           <div className="animate-fade-in-up stagger-2">
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-16">
-              <a href="https://ijmmslth.com/ojs/index.php/ijmms/login" rel="noopener noreferrer" className="bg-white text-primary px-8 py-4 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 shadow-2xl hover:shadow-xl transform hover:-translate-y-1 flex items-center space-x-2">
+              <a href="https://ojs.ijmmslth.com/index.php/ijmms/submission" rel="noopener noreferrer" className="bg-white text-primary px-8 py-4 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 shadow-2xl hover:shadow-xl transform hover:-translate-y-1 flex items-center space-x-2">
                 <BookOpen className="w-5 h-5" />
                 <span>Submit Your Research</span>
               </a>
